@@ -1,0 +1,72 @@
+# 周杰伦大麦抢票助手
+
+这是当前本地项目的精简版，只保留大麦 GUI 抢票流程：
+
+- macOS 启动与 ChromeDriver 检查
+- 大麦扫码登录并保存 Cookie
+- 打开目标演出页测试
+- 开售前持续等待刷新
+- 自动选择票档、观影人并提交订单
+- 订单提交后保留浏览器页面，等待人工付款
+
+## 当前配置
+
+主配置文件是 `config/config.json`，目前只保留真实流程会读取的字段：
+
+- `event_name`：演出备注
+- `target_url`：大麦演出详情页
+- `auto_buy_time`：GUI 定时启动时间
+- `ticket_num`：购票数量
+- `date`：日期优先级，数字从 1 开始
+- `sess`：场次优先级，数字从 1 开始
+- `price`：票档优先级，数字从 1 开始
+- `viewer_person`：观影人序号，数字从 1 开始
+- `damai_url`：大麦首页
+- `driver_path`：可选 ChromeDriver 路径
+
+## macOS 启动
+
+```bash
+./run_mac.sh
+```
+
+也可以手动运行：
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python GUI.py
+```
+
+检查环境：
+
+```bash
+source .venv/bin/activate
+python ticket_script.py --check-env
+```
+
+## 使用流程
+
+1. 在 GUI 里确认演出链接、启动时间、购票数量。
+2. 点“登录测试”，扫码登录并保存 `cookies.pkl`。
+3. 点“打开演出页测试”，确认页面能打开且登录态正常。
+4. 确认“日期/场次/票档优先级”和“观影人序号”。如果账号里一共两个观影人，买两张票就填 `1,2`。
+5. 开售前 5-10 分钟点“提前启动等待开抢”，或者设置好时间后点“定时启动等待”。
+
+## 付款说明
+
+脚本会尝试自动提交订单，但付款必须人工接管。订单提交后会：
+
+- 弹出 macOS 系统通知
+- 保留浏览器页面 15 分钟
+- 等待你远程或本机完成付款
+
+如果电脑放在家里，建议提前配置 ToDesk、向日葵或 Chrome 远程桌面，并用手机在外网测试一次能否远程控制家里的 Mac。
+
+## 注意事项
+
+- Mac 要接电，不要合盖。
+- 真实脚本运行时会启用 macOS `caffeinate` 防睡眠。
+- 如果大麦出现验证码、滑块、排队、支付风控，需要人工处理。
+- 本项目只用于个人学习和自用自动化测试，请自行承担账号、订单和平台规则风险。

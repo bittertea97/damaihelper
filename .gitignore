@@ -1,0 +1,8 @@
+*.pkl
+.venv/
+__pycache__/
+*.pyc
+logs/
+.DS_Store
+chromedriver
+chromedriver.exe
